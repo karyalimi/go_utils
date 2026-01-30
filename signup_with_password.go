@@ -1,17 +1,21 @@
-app.Post("/signup", func(c *fiber.Ctx) error {
-		// Mengambil data langsung dari form-data atau x-www-form-urlencoded
+// --- REGISTER / SIGNUP ---
+	app.Post("/signup", func(c *fiber.Ctx) error {
 		username := c.FormValue("username")
 		password := c.FormValue("password")
 
-		if username == "" || password == "" {
-			return c.Status(400).SendString("Username dan password harus diisi")
-		}
-
 		// Hash password
 		hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), 10)
-		
-		// Simpan ke DB
-		userDatabase[username] = string(hashedPassword)
 
-		return c.SendString("User " + username + " berhasil didaftarkan!")
-})
+		// Simpan ke database menggunakan GORM
+		newUser := User{
+			Username: username,
+			Password: string(hashedPassword),
+		}
+
+		result := DB.Create(&newUser)
+		if result.Error != nil {
+			return c.Status(500).SendString("Gagal mendaftarkan user (mungkin username sudah ada)")
+		}
+
+		return c.SendString("User " + username + " berhasil disimpan ke database!")
+	})
