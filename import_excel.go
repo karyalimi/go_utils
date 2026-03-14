@@ -40,7 +40,7 @@ app.Post("/import", func(c *fiber.Ctx) error {
 				NIK:  row[0], // Kolom A
 				Nama: row[1], // Kolom B
 			}
-			dataUsers = append(dataUsers)
+			dataUsers = append(dataUsers, user)
 			
 			// Di sini kamu bisa tambahkan logika simpan ke Database (GORM/SQL)
 			fmt.Printf("Importing: %s - %s\n", user.NIK, user.Nama)
